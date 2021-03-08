@@ -16,7 +16,6 @@ Find the value of d < 1000 for which 1/d contains the longest recurring cycle in
 '''
 
 # think i need to do something with euler's totient function
-# I suspect #7, #10, and #26 will all be completed with similar methods
 
 def main():
     print(26)
