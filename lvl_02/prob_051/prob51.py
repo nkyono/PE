@@ -1,3 +1,4 @@
+import time
 '''
 By replacing the 1st digit of the 2-digit number *3, 
 it turns out that six of the nine possible values: 13, 23, 43, 53, 73, and 83, are all prime.
@@ -119,7 +120,9 @@ def main():
 
 
 if __name__ == '__main__':
+    start_time = time.time()
     main()
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 '''
 create a graph
@@ -141,4 +144,5 @@ should result in a binary # if subtract each digit from another (similar to diff
 ''' 
 solved, probably really inefficiently
 used offsets + primes to check if (8) other primes existed
+ehhh still finished in less than a minute, but idk still feels bad
 '''
