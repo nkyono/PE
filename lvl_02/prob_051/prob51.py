@@ -44,8 +44,51 @@ def createPrimes(low, high):
     primes = sorted(primes)
     return primes
 
-def counting(primes, lim):
-    num_nums = {}
+def generateAllBinaryStrings(n, arr, i, res):  
+    if i == n:
+        s = int(''.join(map(str, arr)))
+        res.append(s)  
+        return
+
+    arr[i] = 0
+    generateAllBinaryStrings(n, arr, i + 1, res)  
+
+    arr[i] = 1
+    generateAllBinaryStrings(n, arr, i + 1, res)  
+
+def makeBins():
+    n = 6
+    arr = [None] * n 
+    res = []
+    generateAllBinaryStrings(n, arr, 0, res)
+
+    res = sorted(res)
+    for x in range(len(res)-1, -1, -1):
+        if res[x] < 100000:
+            res.remove(res[x])
+    return res
+
+def checkOff(primes, bins):
+    count = 0
+    for prime in primes:
+        for off in bins:
+            count = 1
+            for x in range(1,10):
+                offset = off * x
+                newPrime = prime + offset
+                if newPrime in primes:
+                    count = count + 1
+            if count >= 8:
+                print("Maybe:",prime)
+                for x in range(1,10):
+                    offset = off * x
+                    newPrime = prime + offset
+                    if newPrime in primes:
+                        print(prime, newPrime, offset)
+                return
+
+def trimPrimes(primes,lim):
+    trimmed = []
     for x in primes:
         strX = str(x)
         for y in range(10):
@@ -53,90 +96,25 @@ def counting(primes, lim):
             for z in strX:
                 if z == str(y):
                     i = i + 1
-            if i == lim:
-                if i in num_nums:
-                    num_nums[i].append(x)
-                else:
-                    num_nums[i] = [x]
-    return num_nums
-
-def fail(primes):
-    num_nums = counting(primes)
-    indexes = {}
-    for x in num_nums:
-        for z in range(6):
-            nums = 0
-            appeared = False
-            for y in range(10):
-                a = 0
-                for i in num_nums[x]:
-                    if str(i)[z] == str(y):
-                        appeared = True
-                        a = a + 1
-                if z in indexes:
-                    indexes[z].append([a,y])
-                else:
-                    indexes[z] = [[a,y]]
-                if appeared:
-                    nums = nums + 1
-                    appeared = False
-    reduced = set()
-    for x in num_nums:
-        for i in num_nums[x]:
-            for y in range(10):
-                strX = str(i)
-                if strX[1] == strX[2] == strX[4]:
-                    reduced.add(i)
-    reduced = sorted(reduced)
-    for i in reduced:
-        print(i)
-    '''
-    for x in indexes:
-        indexes[x] = sorted(indexes[x])
-        print(x, indexes[x])
-    '''
-
-def difference(x,y):
-    strX = str(x)
-    strY = str(y)
-    res = str(abs(int(strX[0]) - int(strY[0]))) + str(abs(int(strX[1]) - int(strY[1]))) + str(abs(int(strX[2]) - int(strY[2]))) + str(abs(int(strX[3]) - int(strY[3]))) + str(abs(int(strX[4]) - int(strY[4]))) + str(abs(int(strX[5]) - int(strY[5]))) 
-    res_set = set(res)
-    if (res_set == {'1'} or res_set == {'0'} or res_set == {'0','1'}):
-        return int(res)
-    return -1
-
-def createGraph(primes, lim):
-    edges = {}
-    numEdges = 0
-    for x in primes:
-        for y in primes:
-            if x != y and abs(x-y)<111111 and str(x)[5] == str(y)[5] and str(x)[0] != str(y)[0]:
-                diff = difference(x,y)
-                if diff > 0:
-                    numEdges = numEdges + 1
-                    if diff in edges:
-                        edges[diff].append([x,y])
-                    else:
-                        edges[diff] = [[x,y]]
-
-    for x in edges:
-        print(x, edges[x])
-
-    print("edges:", numEdges)
-    return edges
-
+            if i >= lim:
+                trimmed.append(x)
+    return trimmed
 
 def main():
     primes = createPrimes(100000, 1000000)
     # fail(primes)
-
+    print(len(primes))
     lim = 3
-    nums = counting(primes, lim)
+    # nums = counting(primes, lim)
+    trimmed = trimPrimes(primes, lim)
+    print(len(trimmed))
     '''
     for x in nums[lim]:
         print(x)
     '''
-    createGraph(nums[lim], lim)
+    # createGraph(nums[lim], lim)
+    res = makeBins()
+    checkOff(trimmed, res)
 
 
 
@@ -158,5 +136,9 @@ go through nodes and find shortest paths?
 
 should result in a binary # if subtract each digit from another (similar to diff above)
 100110
+'''
 
+''' 
+solved, probably really inefficiently
+used offsets + primes to check if (8) other primes existed
 '''
