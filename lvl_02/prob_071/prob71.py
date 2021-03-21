@@ -11,7 +11,7 @@ It can be seen that 2/5 is the fraction immediately to the left of 3/7.
 By listing the set of reduced proper fractions for d ≤ 1,000,000 in ascending order of size, 
 find the numerator of the fraction immediately to the left of 3/7.
 '''
-
+# inefficient thought process
 # let's shrink search space
 # we want left of 3/7
 # 3/7 ~ 428571/999999 ~ 0.42857142857
@@ -20,7 +20,6 @@ find the numerator of the fraction immediately to the left of 3/7.
 # look to left of this
 # 400000/1000000 == .4 == 2/5
 # look to right of this
-
 def getFactors(target):
     factors = set()
     if target == 1:
