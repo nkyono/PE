@@ -19,6 +19,7 @@ def traverse(matrix):
             sums[y][x] = matrix[y][x] + sums[y][x-1]
         # added this bool to check whether matrix has changed
         # way the current logic works, idt it would work if say it went up or down the same column more than once
+        # bool check was definitely necessary
         changed = True
         while changed:
             changed = False
