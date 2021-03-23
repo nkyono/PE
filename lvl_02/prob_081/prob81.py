@@ -7,7 +7,6 @@ Find the minimal path sum from the top left to the bottom right by only moving r
 a 31K text file containing an 80 by 80 matrix.
 '''
 
-# pattern: sumTo[a][b] = max(sumTo[a-1][b], sumTo[a-1][b-1]) + val[a][b], edge cases b=0, b=length of layer
 def traverse(matrix):
     sums = matrix[:]
     for x in range(1,len(matrix)):
