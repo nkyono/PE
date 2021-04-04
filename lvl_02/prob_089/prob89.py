@@ -51,36 +51,6 @@ numerals = {
     "M": 1000
 }
 
-'''
-# completely misread problem
-def parseRoman(num):
-    numCount = {}
-    # preset prev to max value, prev checks that numeral is descending 
-    prev = numerals["I"]
-    # preset numeral counts so that I don't need to check if in dict later
-    for n in numerals:
-        numCount[n] = 0
-
-    val = 0
-    for n in range(len(num)-1, -1, -1):
-        x = num[n]
-        if prev > numerals[x]:
-            print("Breaks: Numerals must be arranged in descending order of size.")
-            return False
-        numCount[x] = numCount[x] + 1
-        if (x == "M" or x == "C" or x == "X") and prev != numerals[x] and val >= numerals[x]:
-            print("Breaks: M, C, and X cannot be equalled or exceeded by smaller denominations.")
-            return False
-        val = val + numerals[x]
-        prev = numerals[x]
-    
-    for n in numCount:
-        if (n == "D" or n == "L" or n == "V") and numCount[n] > 1:
-            print("Breaks: D, L, and V can each only appear once.")
-            return False
-
-    return True
-'''
 def parseRoman(num):
     val = 0
     temp = 0
