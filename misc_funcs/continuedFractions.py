@@ -45,14 +45,16 @@ def convergFrac(a, b, lim):
 
     nums = [arr[0], arr[1]*arr[0] + 1]
     dems = [1, arr[1]]
+    fracs = [[nums[0],dems[0]],[nums[1],dems[1]]] 
     for x in range(2,lim):
         nums.append(arr[x]*nums[x-1] + nums[x-2])
         dems.append(arr[x]*dems[x-1] + dems[x-2])
+        fracs.append([nums[x], dems[x]])
+
     for x in range(len(nums)):
         print("fraction:",nums[x],"/",dems[x])
 
-
-    return arr
+    return fracs
 
 
 def main():
