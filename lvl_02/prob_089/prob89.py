@@ -51,6 +51,34 @@ numerals = {
     "M": 1000
 }
 
+# proposal: find minimal way to make each digit place
+# ex 999 and 666: 999 -> CM | XC | IX; 666 -> DC | LX | VI
+
+def createRoman(num):
+    roman = ""
+    numStr = str(num)
+    nums = {
+        '1' : ["I","X","C"],
+        '2' : ["II","XX","CC"],
+        '3' : ["III","XXX","CCC"],
+        '4' : ["IV","XL","CD"],
+        '5' : ["V","L","D"],
+        '6' : ["VI","LX","DC"],
+        '7' : ["VII","LXX","DCC"],
+        '8' : ["VIII","LXXX","DCCC"],
+        '9' : ["IX","XC","CM"],
+        '0' : ["","",""]
+    }
+    for i in range(len(numStr)-1,-1,-1):
+        if len(numStr) - i < 4:
+            roman = nums[numStr[i]][len(numStr) - i - 1] + roman
+        else:
+            roman = ('M'*(int(numStr[0]))) + roman
+            break
+    print(roman)
+    return roman
+
+
 def parseRoman(num):
     val = 0
     temp = 0
@@ -61,7 +89,7 @@ def parseRoman(num):
             val = val + temp + numerals[num[x]]
             temp = 0
     print(val)
-    return False
+    return val
 
 def main():
     f = open("./lvl_02/prob_089/p089_roman.txt", "r")
@@ -70,7 +98,11 @@ def main():
         num = list(line.strip())
         preCount = preCount + len(num)
         print(line.strip())
-        parseRoman(num)
+        val = parseRoman(num)
+        roman = createRoman(val)
+        print(len(num)-len(str(roman)))
+        preCount = preCount - len(str(roman))
+
         print("------------------")
     print(preCount)
     return
