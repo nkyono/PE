@@ -38,10 +38,11 @@ def calcPeriodFrac(numerator, denominator):
     print("something went wrong in calculating the period...")
     return 0
 
-# NOTE: not implemented for things like square roots
+# NOTE: not implemented for irrational numbers
 # calculating period using long division
 # places will probably be used as a limiter
-def calcPeriodLongDiv(numerator, denominator, places):
+def calcPeriodLongDiv(numerator, denominator):
+    lim = phi(denominator) + 1
     res = ""
     decimal = False
     if numerator < denominator:
@@ -52,7 +53,7 @@ def calcPeriodLongDiv(numerator, denominator, places):
     decimalPlaces = 0
     remainder = int(numStr[numIndex])
     remainders = set()
-    while(remainder != 0 and decimalPlaces < places):
+    while(remainder != 0 and decimalPlaces < lim):
         if remainder >= denominator:
             if decimal:
                 if remainder in remainders:
@@ -85,16 +86,19 @@ def calcPeriodLongDiv(numerator, denominator, places):
             numStr = numStr + "0"
             
         remainder = int(str(remainder) + numStr[numIndex])
-    print(res)
-    return decimal
+    # shouldn't actually ever reach here (when used for its purpose) due to the fact that the period will be less than or equal to phi(denominator)
+
+    # will reach here if used on a non repeating fraction ie 1/8 rather than 1/7
+    return -1
 
 def main():
     # calcPeriodFrac(3923, 6173)
-    assert calcPeriodLongDiv(3923, 6173, 6173) == 3086
-    assert calcPeriodLongDiv(10, 3, 100) == 1
-    assert calcPeriodLongDiv(119, 13 , 10) == 6
-    assert calcPeriodLongDiv(1, 7 , 10) == 6
-    assert calcPeriodLongDiv(1, 37 , 10) == 3
+    # for the limiter, we know that the period will have at most phi(denominator)
+    assert calcPeriodLongDiv(3923, 6173) == 3086
+    assert calcPeriodLongDiv(10, 3) == 1
+    assert calcPeriodLongDiv(119, 13) == 6
+    assert calcPeriodLongDiv(1, 7) == 6
+    assert calcPeriodLongDiv(1, 37) == 3
     return
 
 if __name__ == '__main__':
