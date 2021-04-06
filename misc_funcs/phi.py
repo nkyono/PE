@@ -1,3 +1,5 @@
+# phi function (euler's totient function) gives the number of positive integers up to n that are relatively prime to n
+# ie. a prime number would give n - 1
 def phi(n): 
     result = n
     p = 2
