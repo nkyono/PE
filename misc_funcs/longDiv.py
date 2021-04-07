@@ -104,6 +104,8 @@ def main():
     assert sqrtLongDiv(100,10) == "10"
     assert sqrtLongDiv(49,10) == "7"
     assert sqrtLongDiv(10000,10) == "100"
+    assert sqrtLongDiv(4356,10) == "66"
+    assert sqrtLongDiv(625,10) == "25"
 
 if __name__ == '__main__':
     main()
