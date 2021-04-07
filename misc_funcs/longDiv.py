@@ -49,7 +49,7 @@ def sqrtLongDiv(num, lim):
     currDividend = ""
     front = -1
     back = -1
-    if len(numStr) == 1:
+    if len(numStr) == 1 or len(numStr)%2 != 0:
         front = 0
         back = 1
         currDividend = numStr
@@ -101,6 +101,9 @@ def main():
     assert sqrtLongDiv(2,20) == "1.41421356237309504880"
     assert sqrtLongDiv(1225,10) == "35"
     assert sqrtLongDiv(4,10) == "2"
+    assert sqrtLongDiv(100,10) == "10"
+    assert sqrtLongDiv(49,10) == "7"
+    assert sqrtLongDiv(10000,10) == "100"
 
 if __name__ == '__main__':
     main()
