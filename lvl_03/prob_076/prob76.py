@@ -15,19 +15,6 @@ How many different ways can one hundred be written as a sum of at least two posi
 # p(n) also includes n itself so we need p(n)-1 I think
 import math
 
-def pentNums(minLim, maxLim):
-    nums = []
-    x = 1
-    while(True):
-        num = int(x*(3*x-1)/2)
-        if num < maxLim:
-            if num > minLim:
-                nums.append(num)
-        else:
-            break
-        x = x + 1
-    return nums
-
 def calcWays(lim):
     partN = [1,1]
     for x in range(2,lim):
