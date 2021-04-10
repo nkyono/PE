@@ -10,6 +10,8 @@ Find the value of n, 1 < n < 10^7, for which φ(n) is a permutation of n and the
 '''
 # takes too long to iterate and calculate each value
 # phi(n)/n == phi(rad(n))/rad(n)
+# I think the algorithm for finding rad(n) is less efficient and just adds unnecessary time
+# also due to the fact that the only time it was a permutation and lower ratio was when rad(n) = n
 
 def phi(n): 
     result = n
@@ -24,14 +26,28 @@ def phi(n):
         result = result * (1.0 - (1.0 / float(n))) 
     return int(result) 
 
+# answer is 8319823
+# found by going backwards, took longer than acceptable though
+# there must be some trick
+# I thought that as n approached infinity, that the ratio would also approach a minimum
 def main():
     minRatio = 1000
     minPhi = -1
     minIndex = -1
-    for x in range(2, 100+1):
-        print(x,phi(x))
+    phiDict = {}
+    phiDict[1] = 1
+    for x in range(10**7+1, -1, -1):
+        '''
+        if x % 2 == 0:
+            k = x / 2
+            phiDict[x] = phiDict[k]
+            if k % 2 == 0:
+                phiDict[x] = phiDict[x] * 2
+            phiRes = phiDict[x]
+        else:
         '''
         phiRes = phi(x)
+        phiDict[x] = phiRes
         phiSorted = str(sorted(list(str(phiRes))))
         xSorted = str(sorted(list(str(x))))
         if phiRes != x and phiSorted == xSorted:
@@ -41,12 +57,13 @@ def main():
                 minPhi = phiRes
                 minIndex = x
                 print(x, phiRes, x/phiRes)
-        '''
 
     return
 
 if __name__ == '__main__':
     import time
     start = time.time()
-    main()
-    print("time:",time.time()-start)
+    try:
+        main()
+    finally:
+        print("time:",time.time()-start)
