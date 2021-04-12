@@ -27,6 +27,23 @@ def contFracIrr(a, b, lim):
     arr.append(int(a/b))
     return arr
 
+# a different continued fraction
+import math
+def contFracIrrII(a, lim):
+    arr = [int(math.sqrt(a))]
+    next = arr[0]
+    prev = math.sqrt(a)
+    while(True):
+        prev = 1/(prev - next)
+        print(prev)
+        next = int(prev)
+        arr.append(next)
+        # print(next, prev)
+        if next == arr[0] * 2:
+            break
+    
+    return arr
+
 # a0/1, 
 # (a1a0 + 1)/a1, 
 # (a2(a1a0 + 1) + a0)/(a2a1 + 1), 
@@ -68,7 +85,7 @@ def main():
     assert contFracIrr(math.sqrt(19),1,13) == [4,2,1,3,1,2,8,2,1,3,1,2,8]
     assert contFracIrr(math.pi,1,12) == [3,7,15,1,292,1,1,1,2,1,3,1]
 
-    print(contFracEuler(10))
+    print(contFracIrrII(9969,20))
 
 if __name__ == '__main__':
     main()
