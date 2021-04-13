@@ -28,14 +28,16 @@ def contFracIrr(a, b, lim):
     return arr
 
 # a different continued fraction
+# also breaks at a certain point due to floating point error 
+# shouldn't use floating point arithmetic
 import math
-def contFracIrrII(a, lim):
+def contFracIrrII(a):
     arr = [int(math.sqrt(a))]
     next = arr[0]
     prev = math.sqrt(a)
     while(True):
-        prev = 1/(prev - next)
-        print(prev)
+        prev = prev - next
+        prev = 1/(prev)
         next = int(prev)
         arr.append(next)
         # print(next, prev)
@@ -85,7 +87,11 @@ def main():
     assert contFracIrr(math.sqrt(19),1,13) == [4,2,1,3,1,2,8,2,1,3,1,2,8]
     assert contFracIrr(math.pi,1,12) == [3,7,15,1,292,1,1,1,2,1,3,1]
 
-    print(contFracIrrII(9969,20))
+
+    for x in range(2,150):
+        if not math.sqrt(x).is_integer():
+            print(x, contFracIrrII(x))
+    # print(contFracIrrII(9969))
 
 if __name__ == '__main__':
     main()
