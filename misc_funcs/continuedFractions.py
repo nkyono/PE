@@ -46,6 +46,25 @@ def contFracIrrII(a):
     
     return arr
 
+def conFracIrrIntArith(x):
+    arr = []
+    rem = math.floor(math.sqrt(x))
+    arr.append(rem)
+    if rem**2 == x:
+        # x is a square root
+        return arr
+    q = 1
+    p = 0
+    a = rem
+    while True:
+        p = a * q - p
+        q = int((x - p*p) / q)
+        a = int((rem + p) / q)
+        arr.append(a)
+        if q == 1:
+            break
+    return arr
+
 # a0/1, 
 # (a1a0 + 1)/a1, 
 # (a2(a1a0 + 1) + a0)/(a2a1 + 1), 
@@ -90,7 +109,7 @@ def main():
 
     for x in range(2,150):
         if not math.sqrt(x).is_integer():
-            print(x, contFracIrrII(x))
+            print(x, conFracIrrIntArith(x))
     # print(contFracIrrII(9969))
 
 if __name__ == '__main__':
