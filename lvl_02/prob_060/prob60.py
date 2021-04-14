@@ -6,13 +6,6 @@ The sum of these four primes, 792, represents the lowest sum for a set of four p
 
 Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
 '''
-def testCombos(p,primes):
-    for x in range(4):
-        for y in range(x+1,5):
-            if int(str(p[x])+str(p[y])) not in primes or str(p[y])+str(p[x]) not in primes:
-                return False
-    return True
-
 def calcDivisorsBool(target):
     if target < 2:
         return False
@@ -23,21 +16,6 @@ def calcDivisorsBool(target):
             else:
                 return False
     return True
-
-# just way too many possibilities to try to brute forcing using a O(n^4) algo
-# knew it probably wouldn't work, but I figured might as well try
-def tryOne():
-    primes = []
-    for x in range(2,1000000):
-        if calcDivisorsBool(x):
-            primes.append(x)
-    for a in range(len(primes)-78304):
-        for b in range(a+1,len(primes)-78303):
-            for c in range(b+1,len(primes)-78302):
-                for d in range(c+1,len(primes)-78301):
-                    for e in range(d+1,len(primes)-78300):
-                        if testCombos([primes[a],primes[b],primes[c],primes[d],primes[e]], primes):
-                            print(primes[a],primes[b],primes[c],primes[d],primes[e])
 
 def testPrime(p, primes):
     strP = str(p)
@@ -129,7 +107,6 @@ def tryTwo():
     print(minSum)
 
 def main():
-    # tryOne()
     tryTwo()
     return
 
