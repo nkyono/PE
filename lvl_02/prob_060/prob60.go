@@ -19,7 +19,7 @@ func calcDivsBool(target int) bool {
 	if target < 2 {
 		return false
 	}
-	for i := 2; i < int(math.Sqrt(float64(target))); i++ {
+	for i := 2; i < int(math.Sqrt(float64(target)))+1; i++ {
 		if target%i == 0 {
 			return false
 		}
@@ -87,7 +87,7 @@ func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 	if len(*arr) == n {
 		return true
 	}
-	for k := range primes {
+	for k := range primes[curr] {
 		if !checkArray(k, *arr) {
 			*arr = append(*arr, k)
 			for _, y := range *arr {
@@ -111,7 +111,7 @@ func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 
 func iterPrimes() int {
 	primes := make(map[int][][]int)
-	for i := 0; i < 10000000; i++ {
+	for i := 2; i < 10000000; i++ {
 		if _, checkOne := primes[i]; calcDivsBool(i) && !checkOne {
 			res := testPrime(i, primes)
 			if len(res) != 0 {
@@ -146,15 +146,14 @@ func iterPrimes() int {
 			primeCounts[val[1]][val[0]] = true
 		}
 	}
-	/*
-		for k, v := range primeCounts {
-			fmt.Printf("%d, %v\n", k, v)
-		}
-	*/
+	for k, v := range primeCounts {
+		fmt.Printf("%d, %v\n", k, v)
+	}
 	minSum := -1
+	var minArr []int
 	for k, v := range primeCounts {
 		if len(v) >= 4 {
-			var arr []int
+			arr := []int{k}
 			if checkRelations(k, &arr, primeCounts) {
 				sum := 0
 				for _, v := range arr {
@@ -163,11 +162,14 @@ func iterPrimes() int {
 				fmt.Printf("%d %v\n", sum, arr)
 				if minSum > sum || minSum == -1 {
 					minSum = sum
+					minArr = make([]int, len(arr))
+					copy(minArr, arr)
 				}
 			}
 		}
 	}
 
+	fmt.Printf("%v\n", minArr)
 	return minSum
 }
 
