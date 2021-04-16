@@ -35,11 +35,12 @@ func testPrime(prime int, primes map[int][][]int) [][]int {
 	if len(primeString) < 2 {
 		return res
 	}
-	for i := 0; i < len(primeString); i++ {
+	for i := 1; i < len(primeString); i++ {
 		a, e1 := strconv.Atoi(primeString[:i])
 		b, e2 := strconv.Atoi(primeString[i:])
 		if e1 != nil || e2 != nil {
 			fmt.Println("conversion of int to string failed")
+			fmt.Printf("%v\n%v\n", e1, e2)
 		}
 		if primeString[i] != '0' {
 			_, checkA := primes[a]
@@ -66,8 +67,13 @@ func checkArray(e int, list []int) bool {
 
 // helper function that removes element from array
 func removeElem(e int, list []int) []int {
-	list[len(list)-1], list[e] = list[e], list[len(list)-1]
-	return list[:len(list)-1]
+	for i, v := range list {
+		if v == e {
+			list[len(list)-1], list[i] = list[i], list[len(list)-1]
+			return list[:len(list)-1]
+		}
+	}
+	return list
 }
 
 /* checkRelations is a function that returns an array of primes that form a complete graph of size n
@@ -106,13 +112,14 @@ func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 func iterPrimes() int {
 	primes := make(map[int][][]int)
 	for i := 0; i < 10000000; i++ {
-		if _, checkOne := primes[i]; calcDivsBool(i) && checkOne {
+		if _, checkOne := primes[i]; calcDivsBool(i) && !checkOne {
 			res := testPrime(i, primes)
 			if len(res) != 0 {
 				for _, v := range res {
 					rev, e := strconv.Atoi(strconv.Itoa(v[1]) + strconv.Itoa(v[0]))
 					if e != nil {
 						fmt.Println("Error converting string to int")
+						fmt.Printf("%v\n", e)
 					}
 					if calcDivsBool(rev) {
 						p := []int{v[0], v[1]}
@@ -125,15 +132,25 @@ func iterPrimes() int {
 			}
 		}
 	}
-	fmt.Printf("%v\n", primes)
+	// fmt.Printf("%v\n", primes)
 	primeCounts := make(map[int]map[int]bool)
 	for _, v := range primes {
 		for _, val := range v {
+			if _, check := primeCounts[val[0]]; !check {
+				primeCounts[val[0]] = make(map[int]bool)
+			}
 			primeCounts[val[0]][val[1]] = true
+			if _, check := primeCounts[val[1]]; !check {
+				primeCounts[val[1]] = make(map[int]bool)
+			}
 			primeCounts[val[1]][val[0]] = true
 		}
 	}
-	fmt.Printf("%v\n", primeCounts)
+	/*
+		for k, v := range primeCounts {
+			fmt.Printf("%d, %v\n", k, v)
+		}
+	*/
 	minSum := -1
 	for k, v := range primeCounts {
 		if len(v) >= 4 {
@@ -143,7 +160,7 @@ func iterPrimes() int {
 				for _, v := range arr {
 					sum = sum + v
 				}
-				fmt.Printf("%d %d %v\n", k, sum, arr)
+				fmt.Printf("%d %v\n", sum, arr)
 				if minSum > sum || minSum == -1 {
 					minSum = sum
 				}
@@ -152,7 +169,6 @@ func iterPrimes() int {
 	}
 
 	return minSum
-	// fmt.Printf("%v\n", primes)
 }
 
 func main() {
