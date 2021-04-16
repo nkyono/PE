@@ -1,5 +1,12 @@
 package main
 
+/* The primes 3, 7, 109, and 673, are quite remarkable.
+ * By taking any two primes and concatenating them in any order the result will always be prime.
+ * For example, taking 7 and 109, both 7109 and 1097 are prime.
+ * The sum of these four primes, 792, represents the lowest sum for a set of four primes with this property.
+ * Find the lowest sum for a set of five primes for which any two primes concatenate to produce another prime.
+ */
+
 import (
 	"fmt"
 	"math"
@@ -20,8 +27,9 @@ func calcDivsBool(target int) bool {
 	return true
 }
 
-// testPrime checks whether a number can be split into two primes
-func testPrime(prime int, primes map[int]bool) [][]int {
+// testPrime checks whether a number can be split into two primes and returns the ways it can be
+// returns an array of tuples, each tuple is the primes it can be split into
+func testPrime(prime int, primes map[int][][]int) [][]int {
 	primeString := strconv.Itoa(prime)
 	var res [][]int
 	if len(primeString) < 2 {
@@ -95,19 +103,61 @@ func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 	return false
 }
 
-func iterPrimes() {
-	var prime []int
+func iterPrimes() int {
+	primes := make(map[int][][]int)
 	for i := 0; i < 10000000; i++ {
-		if calcDivsBool(i) {
-			prime = append(prime, i)
+		if _, checkOne := primes[i]; calcDivsBool(i) && checkOne {
+			res := testPrime(i, primes)
+			if len(res) != 0 {
+				for _, v := range res {
+					rev, e := strconv.Atoi(strconv.Itoa(v[1]) + strconv.Itoa(v[0]))
+					if e != nil {
+						fmt.Println("Error converting string to int")
+					}
+					if calcDivsBool(rev) {
+						p := []int{v[0], v[1]}
+						primes[i] = append(primes[i], p)
+						primes[rev] = append(primes[rev], p)
+					}
+				}
+			} else {
+				primes[i] = [][]int{}
+			}
 		}
 	}
-	fmt.Printf("%v\n", prime)
+	fmt.Printf("%v\n", primes)
+	primeCounts := make(map[int]map[int]bool)
+	for _, v := range primes {
+		for _, val := range v {
+			primeCounts[val[0]][val[1]] = true
+			primeCounts[val[1]][val[0]] = true
+		}
+	}
+	fmt.Printf("%v\n", primeCounts)
+	minSum := -1
+	for k, v := range primeCounts {
+		if len(v) >= 4 {
+			var arr []int
+			if checkRelations(k, &arr, primeCounts) {
+				sum := 0
+				for _, v := range arr {
+					sum = sum + v
+				}
+				fmt.Printf("%d %d %v\n", k, sum, arr)
+				if minSum > sum || minSum == -1 {
+					minSum = sum
+				}
+			}
+		}
+	}
+
+	return minSum
+	// fmt.Printf("%v\n", primes)
 }
 
 func main() {
 	p := fmt.Println
 	start := time.Now()
-	iterPrimes()
+	fmt.Println(iterPrimes())
 	p("time:", time.Since(start))
 }
