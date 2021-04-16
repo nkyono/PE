@@ -31,7 +31,7 @@ def testPrime(p, primes):
     return pairs
 
 def checkRelations(curr, arr, primes):
-    if len(arr) == 5:
+    if len(arr) == 4:
         # print(arr)
         return True
 

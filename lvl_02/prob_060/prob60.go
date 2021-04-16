@@ -83,7 +83,7 @@ func removeElem(e int, list []int) []int {
  */
 func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 	// n is the size of graph that we want/number of primes we want that all connect
-	n := 4
+	n := 5
 	if len(*arr) == n {
 		return true
 	}
@@ -111,7 +111,7 @@ func checkRelations(curr int, arr *[]int, primes map[int]map[int]bool) bool {
 
 func iterPrimes() int {
 	primes := make(map[int][][]int)
-	for i := 2; i < 10000000; i++ {
+	for i := 2; i < 50000000; i++ {
 		if _, checkOne := primes[i]; calcDivsBool(i) && !checkOne {
 			res := testPrime(i, primes)
 			if len(res) != 0 {
@@ -146,9 +146,11 @@ func iterPrimes() int {
 			primeCounts[val[1]][val[0]] = true
 		}
 	}
-	for k, v := range primeCounts {
-		fmt.Printf("%d, %v\n", k, v)
-	}
+	/*
+		for k, v := range primeCounts {
+			fmt.Printf("%d, %v\n", k, v)
+		}
+	*/
 	minSum := -1
 	var minArr []int
 	for k, v := range primeCounts {
