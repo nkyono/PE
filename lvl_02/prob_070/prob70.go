@@ -5,7 +5,13 @@ import (
 	"math"
 	"problem70/SortString"
 	"strconv"
+	"time"
 )
+
+/* Solves the problem quite fast
+ * Uses same algorithm as the python version but finishes much faster
+ * Go takes ~25 seconds, python3 takes >60 sec
+ */
 
 func phi(n int) int {
 	res := float64(n)
@@ -23,7 +29,7 @@ func phi(n int) int {
 	return int(res)
 }
 
-func main() {
+func driver() {
 	minRatio := 1000.0
 	minPhi := -1
 	minIndex := -1
@@ -45,5 +51,12 @@ func main() {
 		}
 	}
 
-	fmt.Printf("%d, %d, %f\n", minIndex, minPhi, minRatio)
+	fmt.Printf("Answer: %d, %d, %f\n", minIndex, minPhi, minRatio)
+}
+
+func main() {
+	p := fmt.Println
+	start := time.Now()
+	driver()
+	p("time:", time.Since(start))
 }
