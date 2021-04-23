@@ -22,6 +22,7 @@ func calcDivs(n int) []int {
 	return divs
 }
 
+/*
 func compSliceInt(a, b []int) bool {
 	if (a == nil) != (b == nil) {
 		return false
@@ -36,7 +37,7 @@ func compSliceInt(a, b []int) bool {
 	}
 	return true
 }
-
+*/
 func TestCalcDivs(t *testing.T) {
 	var test = []struct {
 		in   int
