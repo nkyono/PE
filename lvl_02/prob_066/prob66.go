@@ -34,30 +34,15 @@ func bruteForce(lim int) {
 	fmt.Printf("maxes x: %d, y: %d, d: %d\n", maxX, maxY, maxD)
 }
 
-/* p_n^2 - D * q_n^2 = (-1)^(n+1)
- * a_0 = floor(sqrt(D))
- * p_0 = a_0
- * p_1 = a_0 * a_1 + 1
- * p_n = a_n * p_(n-1) + p_(n-2)
- * q_0 = 1
- * q_1 = a_1
- * q_n = a_n * q_(n-1) + q_(n-2)
+/* calculate convergents using continued fraction
+ *
+ *
  */
 
-/* p_n^2 - D * q_n^2 = (-1)^(n+1) * Q_(n+1)
- * P_0 = 0
- * P_1 = a_0
- * P_n = a_(n-1) * Q_(n-1) - p_(n-2)
- * Q_0 = 1
- * Q_1 = D - a_0^2
- * Q_n = (D - P_n^2) / Q_(n-1)
- * a_n = floor((a_0 + P_n)/Q_n)
- */
-
-func contFracIrrArith(x float64) []int {
-	arr := []int{}
+func contFracIrrArith(x float64) []uint64 {
+	arr := []uint64{}
 	rem := math.Floor(math.Sqrt(x))
-	arr = append(arr, int(rem))
+	arr = append(arr, uint64(rem))
 	if math.Pow(rem, 2) == x {
 		// x is square
 		return arr
@@ -69,7 +54,7 @@ func contFracIrrArith(x float64) []int {
 		p = a*q - p
 		q = math.Floor((x - math.Pow(float64(p), 2)) / float64(q))
 		a = math.Floor((rem + p) / q)
-		arr = append(arr, int(a))
+		arr = append(arr, uint64(a))
 		if q == 1 {
 			break
 		}
@@ -78,93 +63,53 @@ func contFracIrrArith(x float64) []int {
 }
 
 type pair struct {
-	p int
-	q int
+	p uint64
+	q uint64
 }
 
-func pellRecurrence(d int) pair {
+func pellRecurrence(d uint64) pair {
 	ansPair := pair{}
-	arr := contFracIrrArith(float64(d))
-	parr1 := make([]int, len(arr))
-	qarr1 := make([]int, len(arr))
-	parr2 := make([]int, len(arr))
-	qarr2 := make([]int, len(arr))
-	// fmt.Printf("%d, %v\n", d, arr)
-	parr1[0] = arr[0]
-	qarr1[0] = 1
-	parr2[0] = 0
-	qarr2[0] = 1
-	parr2[1] = arr[0]
-	qarr2[1] = d - int(math.Pow(float64(arr[0]), 2))
-	for i := 2; i < len(arr); i++ {
-		parr2[i] = arr[i-1]*qarr2[i-1] - parr2[i-1]
-		qarr2[i] = int((float64(d) - math.Pow(float64(parr2[i]), 2)) / float64(qarr2[i-1]))
+	a := contFracIrrArith(float64(d))
+	converg := []pair{}
+	converg = append(converg, pair{a[0], 1}, pair{a[0]*a[1] + 1, a[1]})
+	period := len(a) - 1
+	// fmt.Println("----------")
+	if period%2 != 0 {
+		a = append(a, a[1:]...)
+		period = len(a) - 1
 	}
-	/*
-		if math.Pow(float64(parr1[0]), 2)-float64(d)*math.Pow(float64(qarr1[0]), 2) == -1*float64(qarr2[1]) {
-			ansPair.p = parr1[0]
-			ansPair.q = qarr1[0]
-			return ansPair
-		}
-	*/
-	parr1[1] = arr[0]*arr[1] + 1
-	qarr1[1] = arr[1]
-	if math.Pow(float64(parr1[1]), 2)-float64(d)*math.Pow(float64(qarr1[1]), 2) == 1 {
-		ansPair.p = parr1[1]
-		ansPair.q = qarr1[1]
-		return ansPair
+	// fmt.Printf("%d, %v\n", period, a)
+	for i := 2; i < period; i++ {
+		converg = append(converg, pair{a[i]*converg[i-1].p + converg[i-2].p, a[i]*converg[i-1].q + converg[i-2].q})
 	}
-	// fmt.Println("---------------")
-	i := 2
-	for math.Pow(float64(parr1[i-1]), 2)-float64(d)*math.Pow(float64(qarr1[i-1]), 2) != 1 {
-		// fmt.Printf("i: %d, ineq: %f\n", i, math.Pow(float64(parr1[i-1]), 2)-float64(d)*math.Pow(float64(qarr1[i-1]), 2))
-		parr1 = append(parr1, arr[i]*parr1[i-1]+parr1[i-2])
-		qarr1 = append(qarr1, arr[i]*qarr1[i-1]+qarr1[i-2])
-		// old: math.Pow(float64(parr1[i]), 2)-float64(d)*math.Pow(float64(qarr1[i]), 2) == math.Pow(-1, float64(i)+1)
-		// && math.Pow(float64(parr1[i]), 2)-float64(d)*math.Pow(float64(qarr1[i]), 2) == math.Pow(-1, float64(i+1))*float64(qarr2[i+1])
-		/*if parr1[i]*qarr1[i-1]-parr1[i-1]*qarr1[i] == int(math.Pow(-1, float64(i+1))) {
-			ansPair.p = parr1[i]
-			ansPair.q = qarr1[i]
-			// return ansPair
-		}*/
-		if i == len(arr)-1 {
-			arr = append(arr, arr...)
-		}
-		i++
-	}
-	ansPair.p = parr1[i-1]
-	ansPair.q = qarr1[i-1]
-	/*
-		fmt.Printf("arr: %v\n", arr)
-		fmt.Printf("p1: %v\nq1: %v\n", parr1, qarr1)
-		fmt.Printf("p2: %v\nq2: %v\n", parr2, qarr2)
-	*/
-	/*
-		fmt.Printf("p: %v\nq: %v\n", parr1, qarr1)
-		minX := -1
-		for i := 1; i < len(parr1); i++ {
-			if (minX > parr1[i] || minX == -1) && math.Pow(float64(parr1[i]), 2)-float64(d)*math.Pow(float64(qarr1[i]), 2) == 1 {
-				ansPair.p = parr1[i]
-				ansPair.q = qarr1[i]
-				minX = parr1[i]
-			}
-		}
-	*/
+	// fmt.Printf("%v\n", converg)
+	ansPair.p = converg[len(converg)-1].p
+	ansPair.q = converg[len(converg)-1].q
 	return ansPair
 }
 
-func pellDriver(lim int) {
-	for d := 2; d <= lim; d++ {
+func pellDriver(lim uint64) {
+	maxX := uint64(0)
+	maxD := uint64(0)
+	maxY := uint64(0)
+	for d := uint64(2); d <= lim; d++ {
 		check := math.Sqrt(float64(d))
 		if float64(int(check)) != check {
 			ans := pellRecurrence(d)
-			fmt.Printf("%d: %v\n", d, ans)
+			// fmt.Printf("%d: %v\n", d, ans)
+			if ans.p > maxX {
+				maxX = ans.p
+				maxD = d
+				maxY = ans.q
+				fmt.Printf("d: %d, x: %d, y: %d\n", maxD, maxX, maxY)
+			}
 		}
 	}
+	fmt.Printf("d: %d, x: %d, y: %d\n", maxD, maxX, maxY)
 }
 
 func driver() {
-	lim := 15
+	lim := uint64(1000)
 	// bruteForce(lim)
 	pellDriver(lim)
 }
