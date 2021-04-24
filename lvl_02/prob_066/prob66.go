@@ -34,11 +34,6 @@ func bruteForce(lim int) {
 	fmt.Printf("maxes x: %d, y: %d, d: %d\n", maxX, maxY, maxD)
 }
 
-/* calculate convergents using continued fraction
- *
- *
- */
-
 func contFracIrrArith(x float64) []uint64 {
 	arr := []uint64{}
 	rem := math.Floor(math.Sqrt(x))
@@ -67,25 +62,36 @@ type pair struct {
 	q uint64
 }
 
+/* calc convergents using continued fraction
+ * issue with over on odd periods because odd periods turn into 2r
+ * could try to swith to bigInt which may solve problem
+ * instead I ignored all even periods (because only odd ones overflowed)
+ * just used r instead of 2r. due to the way convergents are calculated,
+ * if a convergent_i[r] > convergent_j[r] than convergent_i[2r] > convergent_j[2r]
+ * I have no written proof for this theory, but it worked ...
+ */
+
 func pellRecurrence(d uint64) pair {
 	ansPair := pair{}
 	a := contFracIrrArith(float64(d))
 	converg := []pair{}
 	converg = append(converg, pair{a[0], 1}, pair{a[0]*a[1] + 1, a[1]})
-	period := len(a) - 1
+	period := len(a)
 	// fmt.Println("----------")
-	if period%2 != 0 {
-		a = append(a, a[1:]...)
-		period = len(a) - 1
+	if period%2 == 0 {
+		// a = append(a, a[1:]...)
+		// period = period * 2
+		// fmt.Printf("%d, %v\n", period, a)
+		for i := 2; i < period; i++ {
+			converg = append(converg, pair{a[i]*converg[i-1].p + converg[i-2].p, a[i]*converg[i-1].q + converg[i-2].q})
+		}
+		// fmt.Printf("%v\n", converg)
+		ansPair.p = converg[len(converg)-1].p
+		ansPair.q = converg[len(converg)-1].q
+		return ansPair
+	} else {
+		return ansPair
 	}
-	// fmt.Printf("%d, %v\n", period, a)
-	for i := 2; i < period; i++ {
-		converg = append(converg, pair{a[i]*converg[i-1].p + converg[i-2].p, a[i]*converg[i-1].q + converg[i-2].q})
-	}
-	// fmt.Printf("%v\n", converg)
-	ansPair.p = converg[len(converg)-1].p
-	ansPair.q = converg[len(converg)-1].q
-	return ansPair
 }
 
 func pellDriver(lim uint64) {
@@ -96,12 +102,12 @@ func pellDriver(lim uint64) {
 		check := math.Sqrt(float64(d))
 		if float64(int(check)) != check {
 			ans := pellRecurrence(d)
-			// fmt.Printf("%d: %v\n", d, ans)
+			fmt.Printf("%d: %v\n", d, ans)
 			if ans.p > maxX {
 				maxX = ans.p
 				maxD = d
 				maxY = ans.q
-				fmt.Printf("d: %d, x: %d, y: %d\n", maxD, maxX, maxY)
+				// fmt.Printf("d: %d, x: %d, y: %d\n", maxD, maxX, maxY)
 			}
 		}
 	}
