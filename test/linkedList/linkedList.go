@@ -12,7 +12,7 @@ func doubleLinkedList(values []int) {
 	first := nodeDouble{values[0], nil, nil}
 	curr := &first
 	prev := curr
-	for _, v := range values {
+	for _, v := range values[1:] {
 		newNode := nodeDouble{v, nil, curr}
 		curr.next = &newNode
 		prev = curr
